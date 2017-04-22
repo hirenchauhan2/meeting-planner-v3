@@ -10,7 +10,11 @@ class MeetingsTableSchema extends Schema {
       table.text('description').notNullable()
       table.datetime('meetingDate').notNullable()
       table.integer('user_id').unsigned().references('id').inTable('users')
-      table.integer('location').unsigned().references('id').inTable('locations')
+      table
+        .integer('location_id')
+        .unsigned()
+        .references('id')
+        .inTable('locations')
       table.timestamps()
     })
   }
