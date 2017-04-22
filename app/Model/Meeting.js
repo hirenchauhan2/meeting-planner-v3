@@ -7,12 +7,12 @@ class Meeting extends Lucid {
     return this.belongsTo('App/Model/User')
   }
 
-  place () {
-    return this.hasOne('App/Model/Place')
+  location () {
+    return this.hasOne('App/Model/Location')
   }
 
-  attendees () {
-    return this.belongsToMany('App/Model/User')
+  participants () {
+    return this.hasMany('App/Model/Participant')
   }
 }
 

@@ -2,12 +2,10 @@
 
 const Lucid = use('Lucid')
 
-class Contact extends Lucid {
-
-  user () {
+class Participant extends Lucid {
+  meeting () {
     return this.belongsTo('App/Model/User')
   }
-
 }
 
-module.exports = Contact
+module.exports = Participant

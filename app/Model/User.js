@@ -34,10 +34,6 @@ class User extends Lucid {
     return this.hasMany('App/Model/Meeting')
   }
 
-  attending () {
-    return this.belongsToMany('App/Model/Meeting')
-  }
-
   profile () {
     return this.hasOne('App/Model/Profile')
   }

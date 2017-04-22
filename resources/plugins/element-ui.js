@@ -6,6 +6,10 @@ import { Dialog, Autocomplete, Dropdown, DropdownMenu, DropdownItem, Input, Inpu
   Tag, Tree, Notification, Slider, Loading, Row, Col, Upload, Progress, Spinner,
   Message, Badge, Card, Steps, Step } from 'element-ui'
 
+import lang from 'element-ui/lib/locale/lang/en'
+import locale from 'element-ui/lib/locale'
+locale.use(lang)
+
 Vue.component(Dialog.name, Dialog)
 Vue.component(Autocomplete.name, Autocomplete)
 Vue.component(Dropdown.name, Dropdown)

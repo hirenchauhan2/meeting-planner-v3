@@ -31,7 +31,8 @@ const providers = [
   'adonis-auth/providers/AuthManagerProvider',
   'adonis-websocket/providers/WsProvider',
   'adonis-redis/providers/RedisFactoryProvider',
-  'adonis-redis/providers/RedisProvider'
+  'adonis-redis/providers/RedisProvider',
+  'adonis-validation-provider/providers/ValidatorProvider'
 ]
 
 /*
@@ -79,7 +80,8 @@ const aliases = {
   Schema: 'Adonis/Src/Schema',
   View: 'Adonis/Src/View',
   Ws: 'Adonis/Addons/Ws',
-  Redis: 'Adonis/Addons/Redis'
+  Redis: 'Adonis/Addons/Redis',
+  Validator: 'Adonis/Addons/Validator'
 }
 
 /*

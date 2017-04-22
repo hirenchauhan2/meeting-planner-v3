@@ -3,6 +3,9 @@
 const resolve = require('path').resolve
 
 module.exports = {
+  router: {
+    middleware: 'check-auth'
+  },
   /*
   ** Headers of the page
   */
@@ -34,7 +37,7 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#744d82' },
+  loading: { color: '#13CE66' },
   /*
   ** Point to resources
   */

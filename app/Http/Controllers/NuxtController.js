@@ -16,7 +16,7 @@ class NuxtController {
   }
 
   * render (request, response) {
-    this.nuxt.render(request.request, response.response)
+    this.nuxt.render(request.request, request.response)
   }
 }
 

@@ -1,28 +1,21 @@
 <template>
-  <div class="signup-wrapper" v-show="!isAuthenticated">
-    <div class="bg"></div>
+  <div class="signup-wrapper" v-show="!loggedIn">
     <el-card class="signup-box">
-      <div slot="header">
+      <template slot="header">
         <h1 class="signup--heading">
           Sign up for Meeting Planner
         </h1>
-      </div>
+      </template>
       <el-form class="form" ref="signup" :model="form" :rules="rules"
         @submit.native.prevent="onSubmit">
-        <el-form-item prop="name">
-          <el-input v-model="form.name" placeholder="Your Fullname"></el-input>
-        </el-form-item>
         <el-form-item prop="email">
           <el-input v-model="form.email" placeholder="Your Email"></el-input>
-        </el-form-item>
-        <el-form-item prop="username">
-          <el-input v-model="form.username" placeholder="Username"></el-input>
         </el-form-item>
         <el-form-item prop="password">
           <el-input type="password" v-model="form.password" placeholder="Password"></el-input>
         </el-form-item>
-        <el-form-item prop="confirmPassword">
-          <el-input type="password" v-model="form.confirmPassword" placeholder="Confirm password"></el-input>
+        <el-form-item prop="password_confirmation">
+          <el-input type="password" v-model="form.password_confirmation" placeholder="Confirm password"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button class="signup-button" :class="{error: signupError}" type="success" native-type="submit" :loading="loading">
@@ -42,23 +35,15 @@ import {mapGetters, mapActions} from 'vuex'
 
 export default {
   layout: 'app',
+  middleware: 'guest',
   data () {
     return {
       form: {
-        name: '',
         email: '',
-        username: '',
         password: '',
-        confirmPassword: ''
+        password_confirmation: ''
       },
       rules: {
-        name: [
-          {
-            required: true,
-            message: 'Please enter your full name',
-            trigger: 'blur'
-          }
-        ],
         email: [
           {
             required: true,
@@ -77,13 +62,6 @@ export default {
             }
           }
         ],
-        username: [
-          {
-            required: true,
-            message: 'Please enter the username',
-            trigger: 'blur'
-          }
-        ],
         password: [
           {
             required: true,
@@ -91,18 +69,14 @@ export default {
             trigger: 'blur'
           }
         ],
-        confirmPassword: [
-          {
-            required: true,
-            message: 'Please enter password again',
-            trigger: 'blur'
-          },
+        password_confirmation: [
           {
             trigger: 'blur',
-            message: 'Password does not match',
             validator: (rule, value, callback) => {
-              if (value !== this.form.password) {
-                callback(new Error(rule.message))
+              if (!value) {
+                callback(new Error('Enter password confirmation'))
+              } else if (value !== this.form.password) {
+                callback(new Error('Passwords does not matching'))
               } else {
                 callback()
               }
@@ -115,29 +89,34 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['isAuthenticated'])
+    ...mapGetters({
+      loggedIn: 'loggedIn'
+    })
   },
   methods: {
-    // ...mapActions(['signup']),
+    ...mapActions({
+      signup: 'signup'
+    }),
     onSubmit ($event) {
       this.$refs.signup.validate(valid => {
         if (valid) {
           this.loading = true
           this.signup({
-            name: this.form.name,
             email: this.form.email,
-            username: this.form.username,
-            password: this.form.password
+            password: this.form.password,
+            password_confirmation: this.form.password_confirmation
           })
             .then(data => {
               this.loading = false
-              this.$notify({
-                title: 'Signup Success',
-                message: 'Successfully signed up. Please login now',
-                type: 'success',
-                duration: 1500
-              })
-              this.$router.push(this.$route.query.redirect || '/login')
+              if (data.success) {
+                this.$notify({
+                  title: 'Signup Success',
+                  message: 'Success',
+                  type: 'success',
+                  duration: 1500
+                })
+                this.$router.push(this.$route.query.redirect || '/')
+              }
             })
             .catch(err => {
               console.log(err); // eslint-disable-line
@@ -166,23 +145,14 @@ export default {
 </script>
 <style lang="stylus">
 @import "~assets/css/variable"
-$input-width = 20rem
+$input-width = 25rem
 .signup-wrapper
   align-self center
-  .bg
-    position absolute
-    left 0
-    right 0
-    top 0
-    bottom 0
-    width 100%
-    height 100%
-    background-size cover
-    background-position 100%
-    background-image url('~assets/img/login-bg.jpg')
+  margin-top 45px
+  animation fadeInUp .8s
   .signup-box
     position relative
-    width 25rem
+    width 30rem
     padding-bottom 10px
     .signup--heading
       text-align center

@@ -1,20 +1,10 @@
 'use strict'
 
-/*
-|--------------------------------------------------------------------------
-| Router
-|--------------------------------------------------------------------------
-|
-| AdonisJs Router helps you in defining urls and their actions. It supports
-| all major HTTP conventions to keep your routes file descriptive and
-| clean.
-|
-| @example
-| Route.get('/user', 'UserController.index')
-| Route.post('/user', 'UserController.store')
-| Route.resource('user', 'UserController')
-*/
-
 const Route = use('Route')
 
+Route.post('/users', 'UserController.signup')
+Route.post('/login', 'UserController.login')
+Route.get('/users/me', 'UserController.profile').middleware('auth')
+Route.post('/meetings', 'MeetingsController.store').middleware('auth')
+Route.get('/meetings', 'MeetingsController.index').middleware('auth')
 Route.any('*', 'NuxtController.render')

@@ -3,16 +3,14 @@
 const Schema = use('Schema')
 
 class MeetingsTableSchema extends Schema {
-
   up () {
-    this.create('meetings', (table) => {
+    this.create('meetings', table => {
       table.increments()
-      table.string('title', 100).notNullable().unique()
-      table.text('agenda').notNullable()
-      table.integer('user_id').unsigned()
-          .references('id').inTable('users')
-      table.integer('place_id').unsigned()
-            .references('id').inTable('places')
+      table.string('title').notNullable().unique()
+      table.text('description').notNullable()
+      table.datetime('meetingDate').notNullable()
+      table.integer('user_id').unsigned().references('id').inTable('users')
+      table.integer('location').unsigned().references('id').inTable('locations')
       table.timestamps()
     })
   }
@@ -20,7 +18,6 @@ class MeetingsTableSchema extends Schema {
   down () {
     this.drop('meetings')
   }
-
 }
 
 module.exports = MeetingsTableSchema
