@@ -2,8 +2,10 @@
 
 const Lucid = use('Lucid')
 
-class Place extends Lucid {
-
+class Location extends Lucid {
+  meeting () {
+    return this.belongsTo('App/Model/Meeting')
+  }
 }
 
-module.exports = Place
+module.exports = Location
