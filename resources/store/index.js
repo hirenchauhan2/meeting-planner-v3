@@ -1,4 +1,4 @@
-import {login, getUserInfo, signup} from '../helpers/user.api'
+import {login, getUserInfo, signup, saveUserInfo} from '../helpers/user.api'
 import {unsetToken, setToken} from '~/helpers'
 import jwtDecode from 'jwt-decode'
 
@@ -43,6 +43,8 @@ export const actions = {
               const token = res.token
               setToken(token)
               const {payload: {data}} = jwtDecode(token)
+              // console.log(data)
+
               if (data.profile) {
                 commit('SET_USER', data.user)
                 commit('SET_PROFILE', data.profile)
@@ -68,10 +70,11 @@ export const actions = {
           if (token) {
             setToken(token)
             const {payload: {data}} = jwtDecode(token)
+            // console.log(data)
             commit('SET_USER', data.user)
-            return redirect('/')
+            resolve({})
           } else {
-            resolve()
+            resolve({})
           }
         })
         .catch(err => {
@@ -83,5 +86,26 @@ export const actions = {
   logout ({commit}, payload) {
     unsetToken()
     commit('LOGOUT')
+  },
+
+  saveProfile ({commit}, payload) {
+    return new Promise((resolve, reject) => {
+      saveUserInfo(payload)
+        .then(res => {
+          if (res.token) {
+            const token = data.token
+            setToken(token)
+            const {payload: {data}} = jwtDecode(token)
+            if (data.user) {
+              commit('SET_USER', data.user)
+            }
+            if (data.profile) {
+              commit('SET_PROFILE', data.profile)
+            }
+            resolve({})
+          }
+        })
+        .catch(err => reject(err))
+    })
   }
 }

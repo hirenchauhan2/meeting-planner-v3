@@ -50,4 +50,7 @@ export const getUserFromLocalStorage = () => {
   return token ? jwtDecode(token) : null
 }
 
-export const getToken = () => window.localStorage.getItem('token') || null
+export const getToken = () => {
+  if (process.SERVER_BUILD) return
+  return window.localStorage.getItem('token') || null
+}

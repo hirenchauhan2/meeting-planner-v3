@@ -18,13 +18,7 @@
                      }, {
                        message: 'Invalid email',
                        trigger: 'blur',
-                       validator: (rule, value, callback) => {
-                         if (!isEmail(value)) {
-                           callback(new Error(rule.message))
-                         } else {
-                           callback()
-                         }
-                       }
+                       validator: participantValidator
                      }]">
                         <el-row :gutter="10">
                             <el-col :span="18">
@@ -61,23 +55,23 @@
     </div>
 </template>
 <script>
-import {
-    mapActions
-} from 'vuex'
+import {mapActions} from 'vuex'
 
 import isEmail from 'validator/lib/isEmail' // eslint-disable-line
-import { pick } from 'lodash'
+import {pick} from 'lodash'
 
 export default {
   layout: 'app',
   name: 'CreateMeeting',
-    // middleware: 'authenticated',
+  // middleware: 'authenticated',
   head () {
     return {
       title: 'Create New Meeting Schedule',
-      script: [{
-        src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCBRFIqqMX4fBBnK9VtAC_wQMUAcEJVedQ&libraries=places'
-      }]
+      script: [
+        {
+          src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCBRFIqqMX4fBBnK9VtAC_wQMUAcEJVedQ&libraries=places'
+        }
+      ]
     }
   },
   mounted () {
@@ -89,11 +83,11 @@ export default {
         if (places.length === 0) {
           return
         }
-        const { formatted_address, name, place_id } = places[0]
+        const {formatted_address, name, place_id} = places[0]
         this.location = {
           formatted_address,
           name,
-          place_id
+          gplaceId: place_id
         }
       })
     }
@@ -106,32 +100,48 @@ export default {
         description: '',
         meetingDate: '',
         location: '',
-        participants: [{
-          key: 1,
-          value: ''
-        }]
+        participants: [
+          {
+            key: 1,
+            value: ''
+          }
+        ]
       },
       rules: {
-        title: [{
-          required: true,
-          message: 'Please enter title',
-          trigger: 'blur'
-        }],
-        description: [{
-          required: true,
-          message: 'Please enter description',
-          trigger: 'blur'
-        }],
-        meetingDate: [{
-          trigger: 'blur',
-          message: 'Select datetime for meeting',
-          required: true
-        }],
-        location: [{
-          required: true,
-          message: 'Enter location for meeting',
-          trigger: 'blur'
-        }]
+        title: [
+          {
+            required: true,
+            message: 'Please enter title',
+            trigger: 'blur'
+          }
+        ],
+        description: [
+          {
+            required: true,
+            message: 'Please enter description',
+            trigger: 'blur'
+          }
+        ],
+        meetingDate: [
+          {
+            trigger: 'blur',
+            message: 'Select datetime for meeting',
+            validator: (rule, value, callback) => {
+              if (!value) {
+                callback(new Error(rule.message))
+              } else {
+                callback()
+              }
+            }
+          }
+        ],
+        location: [
+          {
+            required: true,
+            message: 'Enter location for meeting',
+            trigger: 'blur'
+          }
+        ]
       },
       loading: false,
       creationError: false
@@ -141,6 +151,13 @@ export default {
     ...mapActions({
       create: 'meetings/create'
     }),
+    participantValidator (rule, value, callback) {
+      if (!isEmail(value)) {
+        callback(new Error(rule.message))
+      } else {
+        callback()
+      }
+    },
     onSubmit ($event) {
       this.$refs.meeting.validate(valid => {
         if (valid) {
@@ -149,35 +166,36 @@ export default {
             title: this.form.title,
             description: this.form.description,
             meetingDate: this.form.meetingDate,
-            participants: this.form.participants
+            participants: this.form.participants,
+            location: this.location
           })
-                        .then(data => {
-                          this.loading = false
-                          this.$notify({
-                            title: 'Meeting Created',
-                            message: 'Your meeting schedule has been registered',
-                            type: 'success',
-                            duration: 1500
-                          })
-                        })
-                        .catch(err => {
-                            console.log(err); // eslint-disable-line
-                          this.$notify({
-                            title: 'Error',
-                            message: err.response.data.message ||
-                                    'There was some error. Please try again.',
-                            type: 'error',
-                            duration: 1500
-                          })
-                          this.loading = false
-                          this.creationError = true
-                          setTimeout(
-                                () => {
-                                  this.creationError = false
-                                },
-                                1000
-                            )
-                        })
+            .then(data => {
+              if (data.created) {
+                this.loading = false
+                this.resetForm()
+                this.$notify({
+                  title: 'Meeting Created',
+                  message: 'Your meeting schedule has been registered',
+                  type: 'success',
+                  duration: 2000
+                })
+              }
+            })
+            .catch(err => {
+              console.log(err) // eslint-disable-line
+              this.$notify({
+                title: 'Error',
+                message: err.response.data.message ||
+                  'There was some error. Please try again.',
+                type: 'error',
+                duration: 1500
+              })
+              this.loading = false
+              this.creationError = true
+              setTimeout(() => {
+                this.creationError = false
+              }, 1000)
+            })
         }
       })
     },

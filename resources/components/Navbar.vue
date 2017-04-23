@@ -186,9 +186,12 @@
           </li>
           <li class="nav-item">
             <el-dropdown @command="handleCommand">
-              <span class="el-dropdown-link">
+              <a href="#" class="el-dropdown-link" v-if="userProfile && userProfile.fname">
                 {{ userProfile && userProfile.fname }}<i class="el-icon-caret-bottom el-icon--right"></i>
-              </span>
+              </a>
+              <a href="#" class="el-dropdown-link" v-else>
+                {{loggedUser.email}}  <i class="el-icon-caret-bottom el-icon--right"></i>
+              </a>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="profile">  <nuxt-link to="/profile">Profile</nuxt-link>
                 </el-dropdown-item>
@@ -204,15 +207,11 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters([
-      'isAuthenticated',
-      'loggedUser',
-      'userProfile'
-    ])
+    ...mapGetters(['isAuthenticated', 'loggedUser', 'userProfile'])
   },
   data () {
     return {
@@ -232,14 +231,22 @@ export default {
   },
   mounted () {
     function scroll (fn) {
-      window.addEventListener('scroll', () => {
-        fn()
-      }, false)
+      window.addEventListener(
+        'scroll',
+        () => {
+          fn()
+        },
+        false
+      )
     }
     scroll(() => {
       if (this.isHome) {
         const threshold = 200
-        let alpha = Math.min((document.documentElement.scrollTop || document.body.scrollTop), threshold) / threshold
+        let alpha =
+          Math.min(
+            document.documentElement.scrollTop || document.body.scrollTop,
+            threshold
+          ) / threshold
         this.$refs.header.style.backgroundColor = `rgba(32, 160, 255, ${alpha})`
       }
     })

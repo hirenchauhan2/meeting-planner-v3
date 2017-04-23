@@ -38,6 +38,7 @@
   </div>
 </template>
 <script>
+import isEmail from 'validator/lib/isEmail'
 import {mapActions} from 'vuex'
 export default {
   layout: 'app',
@@ -53,14 +54,25 @@ export default {
         email: [
           {
             required: true,
-            message: 'Enter email', // this.$t('login.email'),
+            message: 'Enter email',
             trigger: 'blur'
+          },
+          {
+            message: 'Enter valid email',
+            trigger: 'blur',
+            validator: (rule, value, callback) => {
+              if (!isEmail(value)) {
+                callback(new Error(rule.message))
+              } else {
+                callback()
+              }
+            }
           }
         ],
         password: [
           {
             required: true,
-            message: 'Enter password', // this.$t('login.password'),
+            message: 'Enter password',
             trigger: 'blur'
           }
         ]
@@ -91,7 +103,7 @@ export default {
 
               this.$notify({
                 title: 'Error', // this.$t('message.error'),
-                message: err.message || '', // .$t('login.authFail'),
+                message: err.response.data || err.message || '', // .$t('login.authFail'),
                 type: 'error',
                 duration: 2000
               })

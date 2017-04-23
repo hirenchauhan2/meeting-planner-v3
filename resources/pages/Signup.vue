@@ -1,5 +1,5 @@
 <template>
-  <div class="signup-wrapper" v-show="!loggedIn">
+  <div class="signup-wrapper">
     <el-card class="signup-box">
       <template slot="header">
         <h1 class="signup--heading">
@@ -90,7 +90,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      loggedIn: 'loggedIn'
+      isAuthenticated: 'isAuthenticated'
     })
   },
   methods: {
@@ -108,18 +108,16 @@ export default {
           })
             .then(data => {
               this.loading = false
-              if (data.success) {
-                this.$notify({
-                  title: 'Signup Success',
-                  message: 'Success',
-                  type: 'success',
-                  duration: 1500
-                })
-                this.$router.push(this.$route.query.redirect || '/')
-              }
+              this.$notify({
+                title: 'Signup Success',
+                message: 'You are now registered.',
+                type: 'success',
+                duration: 1500
+              })
+              this.$router.push(this.$route.query.redirect || '/')
             })
             .catch(err => {
-              console.log(err); // eslint-disable-line
+              console.log(err) // eslint-disable-line
               this.$notify({
                 title: 'Error',
                 message: err.body.message ||
@@ -129,19 +127,15 @@ export default {
               })
               this.loading = false
               this.signupError = true
-              setTimeout(
-                () => {
-                  this.signupError = false
-                },
-                1000
-              )
+              setTimeout(() => {
+                this.signupError = false
+              }, 1000)
             })
         }
       })
     }
   }
 }
-
 </script>
 <style lang="stylus">
 @import "~assets/css/variable"
