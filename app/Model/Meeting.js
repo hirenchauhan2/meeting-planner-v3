@@ -3,12 +3,12 @@
 const Lucid = use('Lucid')
 
 class Meeting extends Lucid {
-  user () {
-    return this.belongsTo('App/Model/User')
+  static scopeLatest (builder) {
+    builder.orderBy('meetingDate', 'desc')
   }
 
-  location () {
-    return this.hasOne('App/Model/Location')
+  user () {
+    return this.belongsTo('App/Model/User')
   }
 
   participants () {
