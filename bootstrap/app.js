@@ -32,7 +32,8 @@ const providers = [
   'adonis-websocket/providers/WsProvider',
   'adonis-redis/providers/RedisFactoryProvider',
   'adonis-redis/providers/RedisProvider',
-  'adonis-validation-provider/providers/ValidatorProvider'
+  'adonis-validation-provider/providers/ValidatorProvider',
+  'adonis-mail-provider/providers/MailProvider'
 ]
 
 /*
@@ -81,7 +82,8 @@ const aliases = {
   View: 'Adonis/Src/View',
   Ws: 'Adonis/Addons/Ws',
   Redis: 'Adonis/Addons/Redis',
-  Validator: 'Adonis/Addons/Validator'
+  Validator: 'Adonis/Addons/Validator',
+  Mail: 'Adonis/Addons/Mail'
 }
 
 /*
@@ -117,4 +119,4 @@ const commands = [
   'Adonis/Commands/Key:Generate'
 ]
 
-module.exports = { providers, aceProviders, aliases, commands }
+module.exports = {providers, aceProviders, aliases, commands}
